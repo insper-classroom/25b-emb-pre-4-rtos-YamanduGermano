@@ -18,25 +18,33 @@ SemaphoreHandle_t xSemaphore_r;
 QueueHandle_t xQueueButId2;
 SemaphoreHandle_t xSemaphore_g;
 
-void btn_callback(uint gpio, uint32_t events) {
-    if (events == 0x4) { // fall edge
-        if (gpio == BTN_PIN_R) xSemaphoreGiveFromISR(xSemaphore_r, 0);
-        if (gpio == BTN_PIN_G) xSemaphoreGiveFromISR(xSemaphore_g, 0);
+void btn_callback(uint gpio, uint32_t events)
+{
+    if (events == 0x4)
+    { // fall edge
+        if (gpio == BTN_PIN_R)
+            xSemaphoreGiveFromISR(xSemaphore_r, 0);
+        if (gpio == BTN_PIN_G)
+            xSemaphoreGiveFromISR(xSemaphore_g, 0);
     }
 }
 
-void led_R_task(void *p) {
+void led_R_task(void *p)
+{
     gpio_init(LED_PIN_R);
     gpio_set_dir(LED_PIN_R, GPIO_OUT);
 
     int delay = 0;
 
-    while (true) {
-        if (xQueueReceive(xQueueButId1, &delay, 0)) {
+    while (true)
+    {
+        if (xQueueReceive(xQueueButId1, &delay, 0))
+        {
             printf("%d\n", delay);
         }
 
-        if (delay > 0) {
+        if (delay > 0)
+        {
             gpio_put(LED_PIN_R, 1);
             vTaskDelay(pdMS_TO_TICKS(delay));
             gpio_put(LED_PIN_R, 0);
@@ -45,18 +53,22 @@ void led_R_task(void *p) {
     }
 }
 
-void led_G_task(void *p) {
+void led_G_task(void *p)
+{
     gpio_init(LED_PIN_G);
     gpio_set_dir(LED_PIN_G, GPIO_OUT);
 
     int delay = 0;
 
-    while (true) {
-        if (xQueueReceive(xQueueButId2, &delay, 0)) {
+    while (true)
+    {
+        if (xQueueReceive(xQueueButId2, &delay, 0))
+        {
             printf("%d\n", delay);
         }
 
-        if (delay > 0) {
+        if (delay > 0)
+        {
             gpio_put(LED_PIN_G, 1);
             vTaskDelay(pdMS_TO_TICKS(delay));
             gpio_put(LED_PIN_G, 0);
@@ -65,7 +77,8 @@ void led_G_task(void *p) {
     }
 }
 
-void btn_1_task(void *p) {
+void btn_1_task(void *p)
+{
     gpio_init(BTN_PIN_R);
     gpio_set_dir(BTN_PIN_R, GPIO_IN);
     gpio_pull_up(BTN_PIN_R);
@@ -73,11 +86,16 @@ void btn_1_task(void *p) {
                                        &btn_callback);
 
     int delay = 0;
-    while (true) {
-        if (xSemaphoreTake(xSemaphore_r, pdMS_TO_TICKS(500)) == pdTRUE) {
-            if (delay < 1000) {
+    while (true)
+    {
+        if (xSemaphoreTake(xSemaphore_r, pdMS_TO_TICKS(500)) == pdTRUE)
+        {
+            if (delay < 1000)
+            {
                 delay += 100;
-            } else {
+            }
+            else
+            {
                 delay = 100;
             }
             printf("delay btn %d \n", delay);
@@ -86,7 +104,8 @@ void btn_1_task(void *p) {
     }
 }
 
-void btn_2_task(void *p) {
+void btn_2_task(void *p)
+{
     gpio_init(BTN_PIN_G);
     gpio_set_dir(BTN_PIN_G, GPIO_IN);
     gpio_pull_up(BTN_PIN_G);
@@ -94,11 +113,16 @@ void btn_2_task(void *p) {
                                        &btn_callback);
 
     int delay = 0;
-    while (true) {
-        if (xSemaphoreTake(xSemaphore_g, pdMS_TO_TICKS(500)) == pdTRUE) {
-            if (delay < 1000) {
+    while (true)
+    {
+        if (xSemaphoreTake(xSemaphore_g, pdMS_TO_TICKS(500)) == pdTRUE)
+        {
+            if (delay < 1000)
+            {
                 delay += 100;
-            } else {
+            }
+            else
+            {
                 delay = 100;
             }
             printf("delay btn %d \n", delay);
@@ -107,7 +131,8 @@ void btn_2_task(void *p) {
     }
 }
 
-int main() {
+int main()
+{
     stdio_init_all();
     printf("Start RTOS \n");
 

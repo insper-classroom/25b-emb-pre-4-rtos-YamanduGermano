@@ -56,9 +56,9 @@ void btn_task(void *p)
         {
             printf("%d\n", btn);
             if (btn == BTN_PIN_R)
-                xSemaphoreGive(xSemaphoreLedR, 0);
+                xSemaphoreGive(xSemaphoreLedR);
             if (btn == BTN_PIN_Y)
-                xSemaphoreGive(xSemaphoreLedY, 0);
+                xSemaphoreGive(xSemaphoreLedY);
         }
     }
 }
